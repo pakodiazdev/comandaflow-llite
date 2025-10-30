@@ -12,8 +12,9 @@
 ehthumbs.db
 Thumbs.db
 
-# Docker volumes (if any)
+# Docker volumes and data
 docker/volumes/
+docker/data/
 
 # IDE files
 .vscode/settings.json
@@ -21,13 +22,22 @@ docker/volumes/
 *.swp
 *.swo
 
-# Laravel specific (already in code/.gitignore but for safety)
+# Laravel specific
 code/vendor/
 code/node_modules/
 code/storage/logs/*.log
-code/storage/framework/cache/*
+code/storage/framework/cache/data/*
 code/storage/framework/sessions/*
 code/storage/framework/views/*
+code/public/build/
+code/public/vendor/
+code/public/storage
+
+# Documentation generated files
+docs/generated/
+
+# pgAdmin data (if persisted locally)
+docker/pgadmin/storage/
 
 # Logs
 *.log 

@@ -76,12 +76,8 @@ setup_production() {
 
 # Function to create health check endpoint
 create_health_check() {
-    # Create a simple health check endpoint
-    mkdir -p /app/public
-    cat > /app/public/health << 'EOF'
-OK
-EOF
-    echo "Health check endpoint created"
+    # Health check is now handled by Laravel route
+    echo "Health check handled by Laravel route /health"
 }
 
 # Main execution

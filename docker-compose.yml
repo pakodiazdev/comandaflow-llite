@@ -35,6 +35,15 @@ services:
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
       - CONTAINER_ROLE=app
+      # Mail configuration for MailHog
+      - MAIL_MAILER=smtp
+      - MAIL_HOST=mailhog
+      - MAIL_PORT=1025
+      - MAIL_USERNAME=null
+      - MAIL_PASSWORD=null
+      - MAIL_ENCRYPTION=null
+      - MAIL_FROM_ADDRESS=noreply@comandaflow.com
+      - MAIL_FROM_NAME="ComandaFlow Lite"
     networks:
       - comandaflow-net
     healthcheck:
@@ -68,10 +77,56 @@ services:
       retries: 5
       start_period: 30s
 
+  # MailHog - Email testing tool
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: cf-mailhog
+    restart: unless-stopped
+    ports:
+      - "8025:8025"  # Web interface
+      - "1025:1025"  # SMTP server
+    networks:
+      - comandaflow-net
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8025", "||", "exit", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # pgAdmin - PostgreSQL administration
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: cf-pgadmin
+    restart: unless-stopped
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@comandaflow.com
+      - PGADMIN_DEFAULT_PASSWORD=admin123
+      - PGADMIN_CONFIG_SERVER_MODE=False
+      - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+      - ./docker/pgadmin/servers.json:/pgadmin4/servers.json:ro
+    ports:
+      - "8080:80"  # Web interface
+    networks:
+      - comandaflow-net
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/misc/ping", "||", "exit", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
 volumes:
   db-data:
     driver: local
   app-logs:
+    driver: local
+  pgadmin-data:
     driver: local
 
 networks:

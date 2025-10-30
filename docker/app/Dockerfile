@@ -18,6 +18,8 @@ RUN apk add --no-cache \
     postgresql-client \
     nginx \
     supervisor \
+    nodejs \
+    npm \
     && rm -rf /var/cache/apk/*
 
 # Install PHP extensions
