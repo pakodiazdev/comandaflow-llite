@@ -1,0 +1,33 @@
+# Environment files
+.env
+.env.local
+.env.production
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docker volumes (if any)
+docker/volumes/
+
+# IDE files
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Laravel specific (already in code/.gitignore but for safety)
+code/vendor/
+code/node_modules/
+code/storage/logs/*.log
+code/storage/framework/cache/*
+code/storage/framework/sessions/*
+code/storage/framework/views/*
+
+# Logs
+*.log 

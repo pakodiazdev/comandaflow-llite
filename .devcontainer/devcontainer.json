@@ -1,0 +1,71 @@
+{
+  "name": "ComandaFlow Lite - Laravel Dev Environment",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/app",
+  "shutdownAction": "stopCompose",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "php.executablePath": "/usr/local/bin/php",
+        "php.validate.executablePath": "/usr/local/bin/php",
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash"
+          }
+        },
+        "files.associations": {
+          "*.blade.php": "blade"
+        },
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "php.suggest.basic": false
+      },
+      
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "onecentlin.laravel-blade",
+        "onecentlin.laravel-extension-pack",
+        "ryannaddy.laravel-artisan",
+        "codingyu.laravel-goto-view",
+        "amiralizadeh9480.laravel-extra-intellisense",
+        "ms-azuretools.vscode-docker",
+        "bradlc.vscode-tailwindcss",
+        "formulahendry.auto-rename-tag",
+        "ms-vscode.vscode-json",
+        "PKief.material-icon-theme",
+        "cjhowe7.laravel-blade",
+        "austenc.laravel-blade-spacer"
+      ]
+    }
+  },
+  
+  "forwardPorts": [8000, 5432],
+  "portsAttributes": {
+    "8000": {
+      "label": "Laravel App",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent"
+    }
+  },
+  
+  "postCreateCommand": "composer install && npm install",
+  "postStartCommand": "php artisan serve --host=0.0.0.0 --port=8000",
+  
+  "remoteUser": "www",
+  
+  "mounts": [
+    "source=${localWorkspaceFolder}/.env,target=/app/.env,type=bind",
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ]
+}

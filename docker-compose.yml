@@ -1,0 +1,79 @@
+name: comada-flow-lite
+
+services:
+  # PHP-FPM + Nginx Application
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+      target: development
+    container_name: cf-app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      # Mount source code for development
+      - ./code:/app:cached
+      # Mount logs for debugging
+      - app-logs:/var/log
+      # Mount configuration files for easy editing (DEV ONLY)
+      - ./docker/app/shared/entrypoint.sh:/app/entrypoint.sh:ro
+      - ./docker/app/shared/init.sh:/app/init.sh:ro
+      - ./docker/app/dev/nginx.dev.conf:/etc/nginx/http.d/default.conf:ro
+      - ./docker/app/dev/supervisord.dev.conf:/etc/supervisor/conf.d/supervisord.conf:ro
+      - ./docker/app/dev/start-services.sh:/app/start-services.sh:ro
+    ports:
+      - "8001:8000"  # Nginx
+      - "9001:9000"  # PHP-FPM (for debugging)
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=comandaflow
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - CONTAINER_ROLE=app
+    networks:
+      - comandaflow-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health", "||", "exit", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: cf-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=comandaflow
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./docker/db/init:/docker-entrypoint-initdb.d
+    ports:
+      - "5433:5432"
+    networks:
+      - comandaflow-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  db-data:
+    driver: local
+  app-logs:
+    driver: local
+
+networks:
+  comandaflow-net:
+    driver: bridge
