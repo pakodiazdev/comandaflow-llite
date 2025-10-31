@@ -39,6 +39,12 @@ new class extends Component
                             {{ __('Users') }}
                         </x-nav-link>
                     @endcan
+                    
+                    @can('suppliers.read')
+                        <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')" wire:navigate>
+                            {{ __('Suppliers') }}
+                        </x-nav-link>
+                    @endcan
                 </div>
             </div>
 
@@ -94,6 +100,12 @@ new class extends Component
             @can('users.read')
                 <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" wire:navigate>
                     {{ __('Users') }}
+                </x-responsive-nav-link>
+            @endcan
+            
+            @can('suppliers.read')
+                <x-responsive-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')" wire:navigate>
+                    {{ __('Suppliers') }}
                 </x-responsive-nav-link>
             @endcan
         </div>
