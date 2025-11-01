@@ -1,0 +1,157 @@
+erDiagram
+    ITEM ||--o{ ITEM_VARIANT : has
+    ITEM {
+      uuid id
+      string sku
+      string name
+      enum type "INSUMO|PRODUCTO|ACTIVO"
+      boolean is_stocked
+      boolean is_perishable
+      uuid default_uom_id
+      boolean has_variants
+      decimal selling_price
+      text notes
+      timestamp created_at
+    }
+
+    ITEM_VARIANT {
+      uuid id
+      uuid item_id
+      string code
+      string name
+      uuid uom_id
+      boolean track_lot
+      boolean track_serial
+      timestamp created_at
+    }
+
+    UOM ||--o{ UOM_CONVERSION : has
+    UOM {
+      uuid id
+      string code "pz, kg, lt, g, ml..."
+      string name
+    }
+    UOM_CONVERSION {
+      uuid id
+      uuid from_uom_id
+      uuid to_uom_id
+      decimal factor
+    }
+
+    SUPPLIER ||--o{ SUPPLIER_ITEM : offers
+    SUPPLIER {
+      uuid id
+      string name
+      string tax_id
+      string email
+      string phone
+    }
+    SUPPLIER_ITEM {
+      uuid id
+      uuid supplier_id
+      uuid item_id
+      string supplier_sku
+      decimal last_cost
+    }
+
+    LOCATION ||--o{ STOCK_LAYER : stores
+    LOCATION {
+      uuid id
+      string code "ALM, COC, BAR"
+      string name
+    }
+
+    ITEM_VARIANT ||--o{ STOCK_LAYER : accumulates
+    LOT ||--o{ STOCK_LAYER : batches
+    STOCK_LAYER {
+      uuid id
+      uuid item_variant_id
+      uuid location_id
+      uuid lot_id
+      decimal qty_in
+      decimal qty_out
+      decimal unit_cost
+      timestamp received_at
+      timestamp expiry_at
+    }
+    LOT {
+      uuid id
+      string lot_code
+      timestamp manufactured_at
+      timestamp expiry_at
+    }
+
+    ITEM_VARIANT ||--o{ STOCK_MOVE_LINE : lines
+    LOCATION ||--o{ STOCK_MOVE : has
+    STOCK_MOVE ||--o{ STOCK_MOVE_LINE : contains
+    STOCK_MOVE {
+      uuid id
+      enum type "IN|OUT|ADJUST|TRANSFER|CONSUME|PRODUCE"
+      uuid location_from_id
+      uuid location_to_id
+      timestamp moved_at
+      uuid ref_doc_id
+      string ref_doc_type
+      text note
+    }
+    STOCK_MOVE_LINE {
+      uuid id
+      uuid stock_move_id
+      uuid item_variant_id
+      uuid lot_id
+      decimal qty
+      decimal unit_cost
+    }
+
+    PURCHASE_ORDER ||--o{ PURCHASE_ORDER_LINE : has
+    SUPPLIER ||--o{ PURCHASE_ORDER : places
+    PURCHASE_ORDER {
+      uuid id
+      uuid supplier_id
+      enum status "DRAFT|SENT|RECEIVED|CANCELLED"
+      timestamp eta
+    }
+    PURCHASE_ORDER_LINE {
+      uuid id
+      uuid purchase_order_id
+      uuid item_variant_id
+      decimal qty
+      decimal unit_cost
+    }
+
+    ITEM ||--o{ ASSET : details
+    ASSET {
+      uuid id
+      uuid item_id
+      string serial
+      decimal acquisition_cost
+      date acquisition_date
+      int useful_life_months
+      decimal salvage_value
+      enum depreciation_method "STRAIGHT_LINE"
+      enum status "ACTIVE|DISPOSED|MAINTENANCE"
+    }
+    ASSET ||--o{ ASSET_DEPRECIATION : schedules
+    ASSET_DEPRECIATION {
+      uuid id
+      uuid asset_id
+      date period
+      decimal amount
+      boolean posted
+    }
+
+    ITEM ||--o{ BOM : has
+    BOM ||--o{ BOM_LINE : contains
+    BOM {
+      uuid id
+      uuid item_id "PRODUCTO que se produce"
+      decimal yield_qty
+      uuid uom_id
+    }
+    BOM_LINE {
+      uuid id
+      uuid bom_id
+      uuid component_item_variant_id
+      decimal component_qty
+      uuid component_uom_id
+    }
