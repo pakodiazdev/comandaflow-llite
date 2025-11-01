@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\UomController;
 
 Route::view('/', 'welcome');
 
@@ -57,6 +58,17 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('suppliers/{supplier}', [SupplierController::class, 'destroy'])
         ->middleware('can:suppliers.delete')
         ->name('suppliers.destroy');
+});
+
+// UOM (Units of Measure) Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/inventory/uoms', App\Livewire\Inventory\Uoms\UomsIndex::class)->name('uoms.index');
+    Route::get('/inventory/uoms/create', [UomController::class, 'create'])->name('uoms.create');
+    Route::get('/inventory/uoms/{uom}/edit', [UomController::class, 'edit'])->name('uoms.edit');
+    // Test route
+    Route::get('/inventory/uoms/test', function() {
+        return view('uoms.test');
+    })->name('uoms.test');
 });
 
 require __DIR__.'/auth.php';

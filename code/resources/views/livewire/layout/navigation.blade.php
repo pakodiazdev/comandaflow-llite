@@ -45,6 +45,11 @@ new class extends Component
                             {{ __('Suppliers') }}
                         </x-nav-link>
                     @endcan
+                    
+                    <!-- UOM Management Link -->
+                    <x-nav-link :href="route('uoms.index')" :active="request()->routeIs('uoms.*')" wire:navigate>
+                        {{ __('UOMs') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -108,6 +113,11 @@ new class extends Component
                     {{ __('Suppliers') }}
                 </x-responsive-nav-link>
             @endcan
+            
+            <!-- UOM Management Link -->
+            <x-responsive-nav-link :href="route('uoms.index')" :active="request()->routeIs('uoms.*')" wire:navigate>
+                {{ __('UOMs') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
