@@ -31,30 +31,38 @@ new class extends Component
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                        {{ __('Dashboard') }}
+                        {{ __('app.dashboard') }}
                     </x-nav-link>
                     
                     @can('users.read')
                         <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" wire:navigate>
-                            {{ __('Users') }}
+                            {{ __('app.users') }}
                         </x-nav-link>
                     @endcan
                     
                     @can('suppliers.read')
                         <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')" wire:navigate>
-                            {{ __('Suppliers') }}
+                            {{ __('app.suppliers') }}
                         </x-nav-link>
                     @endcan
                     
+                    <!-- Items Management Link -->
+                    <x-nav-link :href="route('items.index')" :active="request()->routeIs('items.*')" wire:navigate>
+                        {{ __('app.items') }}
+                    </x-nav-link>
+                    
                     <!-- UOM Management Link -->
                     <x-nav-link :href="route('uoms.index')" :active="request()->routeIs('uoms.*')" wire:navigate>
-                        {{ __('UOMs') }}
+                        {{ __('app.uoms') }}
                     </x-nav-link>
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ms-6 sm:space-x-4">
+                <!-- Language Selector -->
+                <livewire:layout.language-selector />
+                
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
@@ -70,13 +78,13 @@ new class extends Component
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile')" wire:navigate>
-                            {{ __('Profile') }}
+                            {{ __('app.profile') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
                         <button wire:click="logout" class="w-full text-start">
                             <x-dropdown-link>
-                                {{ __('Log Out') }}
+                                {{ __('app.logout') }}
                             </x-dropdown-link>
                         </button>
                     </x-slot>
@@ -99,24 +107,29 @@ new class extends Component
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                {{ __('Dashboard') }}
+                {{ __('app.dashboard') }}
             </x-responsive-nav-link>
             
             @can('users.read')
                 <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" wire:navigate>
-                    {{ __('Users') }}
+                    {{ __('app.users') }}
                 </x-responsive-nav-link>
             @endcan
             
             @can('suppliers.read')
                 <x-responsive-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')" wire:navigate>
-                    {{ __('Suppliers') }}
+                    {{ __('app.suppliers') }}
                 </x-responsive-nav-link>
             @endcan
             
+            <!-- Items Management Link -->
+            <x-responsive-nav-link :href="route('items.index')" :active="request()->routeIs('items.*')" wire:navigate>
+                {{ __('app.items') }}
+            </x-responsive-nav-link>
+            
             <!-- UOM Management Link -->
             <x-responsive-nav-link :href="route('uoms.index')" :active="request()->routeIs('uoms.*')" wire:navigate>
-                {{ __('UOMs') }}
+                {{ __('app.uoms') }}
             </x-responsive-nav-link>
         </div>
 
@@ -129,13 +142,13 @@ new class extends Component
 
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile')" wire:navigate>
-                    {{ __('Profile') }}
+                    {{ __('app.profile') }}
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
                 <button wire:click="logout" class="w-full text-start">
                     <x-responsive-nav-link>
-                        {{ __('Log Out') }}
+                        {{ __('app.logout') }}
                     </x-responsive-nav-link>
                 </button>
             </div>

@@ -101,7 +101,7 @@
                             </div>
                         </th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[100px]">
-                            Products
+                            Items
                         </th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider min-w-[280px] bg-gray-50">
                             Actions
@@ -127,7 +127,7 @@
                                 </span>
                             </td>
                             <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-900 min-w-[100px]">
-                                {{ $supplier->products()->count() }} products
+                                {{ $supplier->items()->count() }} items
                             </td>
                             <td class="px-4 py-4 text-sm font-medium min-w-[280px] bg-white" style="display: table-cell !important; visibility: visible !important;">
                                 <div class="flex items-center space-x-2" style="display: flex !important; visibility: visible !important;">

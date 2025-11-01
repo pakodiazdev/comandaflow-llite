@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UomController;
+use App\Http\Controllers\ItemController;
 
 Route::view('/', 'welcome');
 
@@ -69,6 +70,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/inventory/uoms/test', function() {
         return view('uoms.test');
     })->name('uoms.test');
+});
+
+// Item Management Routes
+Route::middleware(['auth'])->group(function () {
+    Route::resource('items', ItemController::class);
 });
 
 require __DIR__.'/auth.php';
