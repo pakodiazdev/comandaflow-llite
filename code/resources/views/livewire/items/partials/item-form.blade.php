@@ -27,18 +27,6 @@
             @error('sku') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
         </div>
 
-        <!-- Internal Reference -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('items.internal_reference') }}</label>
-            <input 
-                type="text" 
-                wire:model="internal_reference"
-                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('internal_reference') border-red-500 @enderror"
-                placeholder="{{ __('items.enter_internal_reference') }}"
-            >
-            @error('internal_reference') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-        </div>
-
         <!-- Type -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('app.type') }} *</label>
@@ -46,14 +34,14 @@
                 wire:model="type"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('type') border-red-500 @enderror"
             >
-                <option value="product">{{ __('items.product') }}</option>
-                <option value="service">{{ __('items.service') }}</option>
-                <option value="consumable">{{ __('items.consumable') }}</option>
+                <option value="PRODUCTO">{{ __('items.producto') }}</option>
+                <option value="INSUMO">{{ __('items.insumo') }}</option>
+                <option value="ACTIVO">{{ __('items.activo') }}</option>
             </select>
             @error('type') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
         </div>
 
-        <!-- Description -->
+        <!-- Description/Notes -->
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('app.description') }}</label>
             <textarea 
@@ -85,39 +73,9 @@
             @error('default_uom_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
         </div>
 
-        <!-- Purchase UOM -->
+        <!-- Selling Price -->
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('items.purchase_uom') }}</label>
-            <select 
-                wire:model="purchase_uom_id"
-                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('purchase_uom_id') border-red-500 @enderror"
-            >
-                <option value="">{{ __('items.select_uom') }}</option>
-                @foreach($this->uoms as $uom)
-                    <option value="{{ $uom->id }}">{{ $uom->name }}</option>
-                @endforeach
-            </select>
-            @error('purchase_uom_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-        </div>
-
-        <!-- Sale UOM -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('items.sale_uom') }}</label>
-            <select 
-                wire:model="sale_uom_id"
-                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('sale_uom_id') border-red-500 @enderror"
-            >
-                <option value="">{{ __('items.select_uom') }}</option>
-                @foreach($this->uoms as $uom)
-                    <option value="{{ $uom->id }}">{{ $uom->name }}</option>
-                @endforeach
-            </select>
-            @error('sale_uom_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-        </div>
-
-        <!-- List Price -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('items.list_price') }}</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('items.selling_price') }}</label>
             <input 
                 type="number" 
                 step="0.01"
@@ -128,96 +86,17 @@
             @error('list_price') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
         </div>
 
-        <!-- Cost Price -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('items.cost_price') }}</label>
-            <input 
-                type="number" 
-                step="0.01"
-                wire:model="cost_price"
-                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('cost_price') border-red-500 @enderror"
-                placeholder="0.00"
-            >
-            @error('cost_price') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-        </div>
-    </div>
-</div>
-
-<!-- Physical Properties -->
-<div class="mt-6">
-    <h4 class="text-md font-medium text-gray-900 mb-4">{{ __('items.physical_properties') }}</h4>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Weight -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('items.weight') }} ({{ __('items.kg') }})</label>
-            <input 
-                type="number" 
-                step="0.001"
-                wire:model="weight"
-                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('weight') border-red-500 @enderror"
-                placeholder="0.000"
-            >
-            @error('weight') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-        </div>
-
-        <!-- Volume -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('items.volume') }} ({{ __('items.m3') }})</label>
-            <input 
-                type="number" 
-                step="0.001"
-                wire:model="volume"
-                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 @error('volume') border-red-500 @enderror"
-                placeholder="0.000"
-            >
-            @error('volume') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-        </div>
-    </div>
-</div>
-
-<!-- Configuration Options -->
-<div class="mt-6">
-    <h4 class="text-md font-medium text-gray-900 mb-4">{{ __('items.configuration') }}</h4>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Sales & Purchase -->
+        <!-- Configuration Options -->
         <div class="space-y-3">
-            <label class="flex items-center">
-                <input 
-                    type="checkbox" 
-                    wire:model="can_be_sold"
-                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                <span class="ml-2 text-sm text-gray-700">{{ __('items.can_be_sold') }}</span>
-            </label>
-
-            <label class="flex items-center">
-                <input 
-                    type="checkbox" 
-                    wire:model="can_be_purchased"
-                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                <span class="ml-2 text-sm text-gray-700">{{ __('items.can_be_purchased') }}</span>
-            </label>
-
-            <label class="flex items-center">
-                <input 
-                    type="checkbox" 
-                    wire:model="is_active"
-                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                <span class="ml-2 text-sm text-gray-700">{{ __('app.active') }}</span>
-            </label>
-        </div>
-
-        <!-- Tracking -->
-        <div class="space-y-3">
+            <h4 class="text-md font-medium text-gray-900">{{ __('items.configuration') }}</h4>
+            
             <label class="flex items-center">
                 <input 
                     type="checkbox" 
                     wire:model="can_be_tracked"
                     class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 >
-                <span class="ml-2 text-sm text-gray-700">{{ __('items.can_be_tracked') }}</span>
+                <span class="ml-2 text-sm text-gray-700">{{ __('items.is_stocked') }}</span>
             </label>
 
             <label class="flex items-center">
@@ -226,16 +105,7 @@
                     wire:model="track_by_lots"
                     class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 >
-                <span class="ml-2 text-sm text-gray-700">{{ __('items.track_by_lots') }}</span>
-            </label>
-
-            <label class="flex items-center">
-                <input 
-                    type="checkbox" 
-                    wire:model="track_by_serial"
-                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                <span class="ml-2 text-sm text-gray-700">{{ __('items.track_by_serial') }}</span>
+                <span class="ml-2 text-sm text-gray-700">{{ __('items.is_perishable') }}</span>
             </label>
         </div>
     </div>

@@ -15,6 +15,8 @@ class ItemManager extends Component
     // Search and filters
     public $search = '';
     public $typeFilter = '';
+    
+    // DEPRECATED: Remove after sessions clear (backwards compatibility)
     public $activeFilter = '';
     
     // Modal states
@@ -27,42 +29,22 @@ class ItemManager extends Component
     public $itemId = '';
     public $name = '';
     public $sku = '';
-    public $internal_reference = '';
     public $description = '';
-    public $type = 'product';
+    public $type = 'PRODUCTO';
     public $default_uom_id = '';
-    public $purchase_uom_id = '';
-    public $sale_uom_id = '';
     public $list_price = '';
-    public $cost_price = '';
-    public $weight = '';
-    public $volume = '';
-    public $can_be_sold = true;
-    public $can_be_purchased = true;
     public $can_be_tracked = false;
     public $track_by_lots = false;
-    public $track_by_serial = false;
-    public $is_active = true;
 
     protected $rules = [
         'name' => 'required|string|max:255',
         'sku' => 'nullable|string|max:100',
-        'internal_reference' => 'nullable|string|max:100',
         'description' => 'nullable|string',
-        'type' => 'required|in:product,service,consumable',
+        'type' => 'required|in:INSUMO,PRODUCTO,ACTIVO',
         'default_uom_id' => 'required|exists:uoms,id',
-        'purchase_uom_id' => 'nullable|exists:uoms,id',
-        'sale_uom_id' => 'nullable|exists:uoms,id',
         'list_price' => 'nullable|numeric|min:0',
-        'cost_price' => 'nullable|numeric|min:0',
-        'weight' => 'nullable|numeric|min:0',
-        'volume' => 'nullable|numeric|min:0',
-        'can_be_sold' => 'boolean',
-        'can_be_purchased' => 'boolean',
         'can_be_tracked' => 'boolean',
         'track_by_lots' => 'boolean',
-        'track_by_serial' => 'boolean',
-        'is_active' => 'boolean',
     ];
 
     public function updatingSearch()
@@ -75,31 +57,50 @@ class ItemManager extends Component
         $this->resetPage();
     }
 
+    public function mount()
+    {
+        // Initialize properties to ensure clean state
+        $this->search = '';
+        $this->typeFilter = '';
+        
+        // Reset any cached Livewire state
+        $this->resetPage();
+    }
+
+    /**
+     * Handle setting of non-existent properties (for backwards compatibility)
+     */
+    public function __set($name, $value)
+    {
+        // Ignore attempts to set deprecated properties
+        if (in_array($name, ['activeFilter'])) {
+            return;
+        }
+        
+        // Call parent for other properties
+        parent::__set($name, $value);
+    }
+
     public function updatingActiveFilter()
     {
-        $this->resetPage();
+        // DEPRECATED: Handle cached sessions, do nothing
     }
 
     #[Computed]
     public function items()
     {
-        $query = Item::with(['defaultUom', 'purchaseUom', 'saleUom']);
+        $query = Item::with(['defaultUom']);
 
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('name', 'ILIKE', "%{$this->search}%")
                   ->orWhere('sku', 'ILIKE', "%{$this->search}%")
-                  ->orWhere('description', 'ILIKE', "%{$this->search}%")
-                  ->orWhere('internal_reference', 'ILIKE', "%{$this->search}%");
+                  ->orWhere('notes', 'ILIKE', "%{$this->search}%");
             });
         }
 
         if ($this->typeFilter) {
             $query->where('type', $this->typeFilter);
-        }
-
-        if ($this->activeFilter !== '') {
-            $query->where('is_active', $this->activeFilter === '1');
         }
 
         return $query->orderBy('name')->paginate(10);
@@ -125,23 +126,13 @@ class ItemManager extends Component
         $this->itemId = $item->id;
         $this->name = $item->name;
         $this->sku = $item->sku;
-        $this->internal_reference = $item->internal_reference;
-        $this->description = $item->description;
+        $this->description = $item->notes;
         $this->type = $item->type;
         $this->default_uom_id = $item->default_uom_id;
-        $this->purchase_uom_id = $item->purchase_uom_id;
-        $this->sale_uom_id = $item->sale_uom_id;
-        $this->list_price = $item->list_price;
-        $this->cost_price = $item->cost_price;
-        $this->weight = $item->weight;
-        $this->volume = $item->volume;
-        $this->can_be_sold = $item->can_be_sold;
-        $this->can_be_purchased = $item->can_be_purchased;
-        $this->can_be_tracked = $item->can_be_tracked;
-        $this->track_by_lots = $item->track_by_lots;
-        $this->track_by_serial = $item->track_by_serial;
-        $this->is_active = $item->is_active;
-        
+        $this->list_price = $item->selling_price;
+        $this->can_be_tracked = $item->is_stocked;
+        $this->track_by_lots = $item->is_perishable;
+
         $this->showEditModal = true;
     }
 
@@ -159,22 +150,13 @@ class ItemManager extends Component
         Item::create([
             'name' => $this->name,
             'sku' => $this->sku ?: null,
-            'internal_reference' => $this->internal_reference ?: null,
-            'description' => $this->description ?: null,
             'type' => $this->type,
             'default_uom_id' => $this->default_uom_id,
-            'purchase_uom_id' => $this->purchase_uom_id ?: null,
-            'sale_uom_id' => $this->sale_uom_id ?: null,
-            'list_price' => $this->list_price ?: null,
-            'cost_price' => $this->cost_price ?: null,
-            'weight' => $this->weight ?: null,
-            'volume' => $this->volume ?: null,
-            'can_be_sold' => $this->can_be_sold,
-            'can_be_purchased' => $this->can_be_purchased,
-            'can_be_tracked' => $this->can_be_tracked,
-            'track_by_lots' => $this->track_by_lots,
-            'track_by_serial' => $this->track_by_serial,
-            'is_active' => $this->is_active,
+            'selling_price' => $this->list_price ?: null,
+            'notes' => $this->description ?: null,
+            'is_stocked' => $this->can_be_tracked ?? true,
+            'is_perishable' => $this->track_by_lots ?? false,
+            'has_variants' => false,
         ]);
 
         $this->showCreateModal = false;
@@ -191,22 +173,13 @@ class ItemManager extends Component
         $this->selectedItem->update([
             'name' => $this->name,
             'sku' => $this->sku ?: null,
-            'internal_reference' => $this->internal_reference ?: null,
-            'description' => $this->description ?: null,
             'type' => $this->type,
             'default_uom_id' => $this->default_uom_id,
-            'purchase_uom_id' => $this->purchase_uom_id ?: null,
-            'sale_uom_id' => $this->sale_uom_id ?: null,
-            'list_price' => $this->list_price ?: null,
-            'cost_price' => $this->cost_price ?: null,
-            'weight' => $this->weight ?: null,
-            'volume' => $this->volume ?: null,
-            'can_be_sold' => $this->can_be_sold,
-            'can_be_purchased' => $this->can_be_purchased,
-            'can_be_tracked' => $this->can_be_tracked,
-            'track_by_lots' => $this->track_by_lots,
-            'track_by_serial' => $this->track_by_serial,
-            'is_active' => $this->is_active,
+            'selling_price' => $this->list_price ?: null,
+            'notes' => $this->description ?: null,
+            'is_stocked' => $this->can_be_tracked ?? true,
+            'is_perishable' => $this->track_by_lots ?? false,
+            'has_variants' => false,
         ]);
 
         $this->showEditModal = false;
@@ -241,22 +214,12 @@ class ItemManager extends Component
         $this->itemId = '';
         $this->name = '';
         $this->sku = '';
-        $this->internal_reference = '';
         $this->description = '';
-        $this->type = 'product';
+        $this->type = 'PRODUCTO';
         $this->default_uom_id = '';
-        $this->purchase_uom_id = '';
-        $this->sale_uom_id = '';
         $this->list_price = '';
-        $this->cost_price = '';
-        $this->weight = '';
-        $this->volume = '';
-        $this->can_be_sold = true;
-        $this->can_be_purchased = true;
         $this->can_be_tracked = false;
         $this->track_by_lots = false;
-        $this->track_by_serial = false;
-        $this->is_active = true;
         $this->resetErrorBag();
     }
 

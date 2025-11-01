@@ -38,29 +38,16 @@
                     class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 >
                     <option value="">{{ __('items.all_types') }}</option>
-                    <option value="product">{{ __('items.product') }}</option>
-                    <option value="service">{{ __('items.service') }}</option>
-                    <option value="consumable">{{ __('items.consumable') }}</option>
-                </select>
-            </div>
-
-            <!-- Active Filter -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">{{ __('app.status') }}</label>
-                <select 
-                    wire:model.live="activeFilter"
-                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                >
-                    <option value="">{{ __('items.all_status') }}</option>
-                    <option value="1">{{ __('app.active') }}</option>
-                    <option value="0">{{ __('app.inactive') }}</option>
+                    <option value="PRODUCTO">{{ __('items.producto') }}</option>
+                    <option value="INSUMO">{{ __('items.insumo') }}</option>
+                    <option value="ACTIVO">{{ __('items.activo') }}</option>
                 </select>
             </div>
 
             <!-- Clear Filters -->
             <div class="flex items-end">
                 <button 
-                    wire:click="$set('search', ''); $set('typeFilter', ''); $set('activeFilter', '')"
+                    wire:click="$set('search', ''); $set('typeFilter', '')"
                     class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg"
                 >
                     {{ __('app.clear_filters') }}
@@ -91,7 +78,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('items.item_name') }}</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('items.item_type') }}</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('items.uom') }}</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('items.prices') }}</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('items.selling_price') }}</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('app.status') }}</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('app.actions') }}</th>
                     </tr>
@@ -105,18 +92,14 @@
                                     @if($item->sku)
                                         <div class="text-sm text-gray-500">SKU: {{ $item->sku }}</div>
                                     @endif
-                                    @if($item->internal_reference)
-                                        <div class="text-sm text-gray-500">Ref: {{ $item->internal_reference }}</div>
-                                    @endif
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
-                                    @if($item->type === 'product') bg-blue-100 text-blue-800
-                                    @elseif($item->type === 'service') bg-green-100 text-green-800
-                                    @else bg-yellow-100 text-yellow-800
-                                    @endif">
-                                    {{ __('items.' . $item->type) }}
+                                                                <span class="px-2 py-1 text-xs font-medium rounded-full
+                                    @if($item->type === 'PRODUCTO') bg-blue-100 text-blue-800
+                                    @elseif($item->type === 'INSUMO') bg-green-100 text-green-800
+                                    @else bg-gray-100 text-gray-800 @endif">
+                                    {{ __('items.' . strtolower($item->type)) }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -124,18 +107,18 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 <div>
-                                    @if($item->list_price)
-                                        <div>{{ __('items.sale_price') }}: ${{ number_format($item->list_price, 2) }}</div>
+                                    @if($item->selling_price)
+                                        <div>{{ __('items.selling_price') }}: ${{ number_format($item->selling_price, 2) }}</div>
                                     @endif
-                                    @if($item->cost_price)
-                                        <div class="text-gray-500">{{ __('items.cost') }}: ${{ number_format($item->cost_price, 2) }}</div>
+                                    @if($item->notes)
+                                        <div class="text-gray-500 text-xs mt-1">{{ Str::limit($item->notes, 50) }}</div>
                                     @endif
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
-                                    {{ $item->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                    {{ $item->is_active ? __('app.active') : __('app.inactive') }}
+                                    {{ $item->is_stocked ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                    {{ $item->is_stocked ? __('items.is_stocked') : __('items.no_stock') }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">

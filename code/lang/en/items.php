@@ -13,6 +13,9 @@ return [
     'delete_item' => 'Delete Item',
     
     // Item types
+    'producto' => 'Product',
+    'insumo' => 'Supply',
+    'activo' => 'Asset',
     'product' => 'Product',
     'service' => 'Service',
     'consumable' => 'Consumable',
@@ -28,6 +31,10 @@ return [
     'default_uom' => 'Default Unit of Measure',
     'purchase_uom' => 'Purchase UOM',
     'sale_uom' => 'Sale UOM',
+    'selling_price' => 'Selling Price',
+    'is_stocked' => 'Is Stocked',
+    'is_perishable' => 'Is Perishable',
+    'no_stock' => 'No Stock',
     
     // Item configuration
     'can_be_sold' => 'Can be sold',
@@ -77,8 +84,14 @@ return [
     'confirm_delete_item' => 'Are you sure you want to delete',
     
     // Validation
-    'name_required' => 'Name is required.',
-    'sku_unique' => 'SKU is already taken.',
-    'default_uom_required' => 'Default unit of measure is required.',
+        // Validation messages
+    'name_required' => 'The name is required.',
+    'sku_unique' => 'The SKU is already in use.',
+    'sku_format' => 'The SKU can only contain letters, numbers, hyphens and underscores.',
+    'invalid_type' => 'The selected type is invalid.',
+    'default_uom_required' => 'The default unit of measure is required.',
+    'invalid_uom' => 'The selected unit of measure is invalid.',
     'positive_number' => 'Must be a positive number.',
+    'price_too_high' => 'The price is too high.',
+    'has_variants' => 'Has Variants',
 ];

@@ -13,6 +13,9 @@ return [
     'delete_item' => 'Eliminar Artículo',
     
     // Item types
+    'producto' => 'Producto',
+    'insumo' => 'Insumo',
+    'activo' => 'Activo',
     'product' => 'Producto',
     'service' => 'Servicio',
     'consumable' => 'Consumible',
@@ -28,6 +31,10 @@ return [
     'default_uom' => 'Unidad de Medida Predeterminada',
     'purchase_uom' => 'Unidad de Compra',
     'sale_uom' => 'Unidad de Venta',
+    'selling_price' => 'Precio de Venta',
+    'is_stocked' => 'Se maneja inventario',
+    'is_perishable' => 'Es perecedero',
+    'no_stock' => 'Sin inventario',
     
     // Item configuration
     'can_be_sold' => 'Se puede vender',
@@ -76,9 +83,14 @@ return [
     'no_items_found' => 'No se encontraron artículos.',
     'confirm_delete_item' => '¿Estás seguro de que deseas eliminar',
     
-    // Validation
+    // Validation messages
     'name_required' => 'El nombre es obligatorio.',
     'sku_unique' => 'El SKU ya está en uso.',
+    'sku_format' => 'El SKU solo puede contener letras, números, guiones y guiones bajos.',
+    'invalid_type' => 'El tipo seleccionado no es válido.',
     'default_uom_required' => 'La unidad de medida predeterminada es obligatoria.',
+    'invalid_uom' => 'La unidad de medida seleccionada no es válida.',
     'positive_number' => 'Debe ser un número positivo.',
+    'price_too_high' => 'El precio es demasiado alto.',
+    'has_variants' => 'Tiene variantes',
 ];
